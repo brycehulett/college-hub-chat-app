@@ -32,9 +32,38 @@ $(".inputTextbox").keydown((e)=>{
 
 function messageSubmitted(){
     var content = $(".inputTextbox").val().trim();
-    sendMessage(content);
+    if(content != ""){
+        sendMessage(content);
+        $(".inputTextbox").val("");
+    }
+    
 }
 
 function sendMessage(content){
-    console.log(content);
+    $.post("/api/messages", {content, chatId}, (data, status, xhr)=>{
+        addChatMessageHtml(data);
+    })
+}
+
+function addChatMessageHtml(msg){
+    if(!msg || !msg._id){
+        return alert('message invalid')
+    }
+
+    var msgDiv = createMessageHtml(msg);
+    $(".chatMessages").append(msgDiv);
+}
+
+function createMessageHtml(msg){
+
+    var isMyMsg = msg.sender._id == userLoggedIn._id;
+    var liClassName = isMyMsg ? "mine" : "theirs";
+
+    return `<li class='message ${liClassName}'>
+                <div class='messageContainer'>
+                    <span class='messageBody'>
+                        ${msg.content}
+                    </span>
+                </div>
+            </li>`;
 }

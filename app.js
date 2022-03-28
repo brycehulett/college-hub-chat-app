@@ -40,8 +40,9 @@ const messagesRoute = require('./routes/messagesRoutes');
 const postApiRoute = require('./routes/api/posts');
 const usersApiRoute = require('./routes/api/users');
 const chatsApiRoute = require('./routes/api/chats');
+const messagesApiRoute = require('./routes/api/messages');
 
-
+// Routes
 app.use("/login", loginRoute);
 app.use("/register", registerRoute);
 app.use("/logout", logoutRoute);
@@ -51,9 +52,11 @@ app.use("/uploads", uploadRoute);
 app.use("/search", middleware.requireLogin, searchRoute);
 app.use("/messages", middleware.requireLogin, messagesRoute);
 
+// API Routes
 app.use("/api/posts", postApiRoute);
 app.use("/api/users", usersApiRoute);
 app.use("/api/chats", chatsApiRoute);
+app.use("/api/messages", messagesApiRoute);
 
 
 // when the root of the site is accessed, first check if user is logged in
