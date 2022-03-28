@@ -10,7 +10,7 @@ $(document).ready(()=>{
 })
 
 function outputChatLists(chatList, container){
-    console.log(chatList);
+    //console.log(chatList);
     chatList.forEach(element => {
         var html = createChatHtml(element);
         container.append(html);
@@ -33,23 +33,6 @@ function createChatHtml(chatData){
                     <span class='subText ellipsis'>${latestMessage}</span>
                 </div>
             </a>`;
-}
-
-function getChatName(chatData){
-    var chatName = chatData.chatName;
-    // use the chat name or set to usersname
-    if(!chatName){
-        var otherChatUsers = getOtherChatUsers(chatData.users);
-        var namesAry = otherChatUsers.map(user=>user.firstName + " " + user.lastName);
-        chatName = namesAry.join(", ");
-    }
-    return chatName;
-}
-
-function getOtherChatUsers(users){
-    //console.log(users);
-    if(users.length == 1) return users;  // chat w/ yourself
-    return users.filter(user=>user._id != userLoggedIn._id);
 }
 
 function getChatImageElements(chatData){
