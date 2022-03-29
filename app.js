@@ -7,10 +7,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('./database')
 const session = require('express-session');
 
-
-const server = app.listen(port, ()=>{
-    console.log("Server listening on port " + port);
-})
+const server = app.listen(port, ()=> console.log("Server listening on port " + port));
+const io = require("socket.io")(server, {pingTimeout: 60000});
 
 app.set("view engine", "pug");      // template engine
 app.set("views", "views");          // use folder called views for views
@@ -70,5 +68,12 @@ app.get("/", middleware.requireLogin, (req, res, next)=>{
     }
 
     res.status(200).render("home", payload); // render home.pug as view passing payload
+})
 
+io.on("connection", socket => {
+    
+    socket.on("setup", userData => {
+        socket.join(userData._id);
+        socket.emit("connected");
+    })
 })

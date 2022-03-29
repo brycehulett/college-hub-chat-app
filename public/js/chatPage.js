@@ -11,13 +11,16 @@ $(document).ready(()=>{
 
         var msgsHtml = msgs.join("");
         addMessagesHtmlToPage(msgsHtml);
+        scrollToBottom(false);
+
+        $('.loadingSpinnerContainer').remove();
+        $('.chatContainer').css('visibility','visible');
+        
     })
 })
 
 function addMessagesHtmlToPage(html){
     $(".chatMessages").append(html);
-    // scroll down
-
 }
 
 $("#chatNameButton").click(()=>{
@@ -77,6 +80,7 @@ function addChatMessageHtml(msg){
 
     var msgDiv = createMessageHtml(msg, null, "");
     addMessagesHtmlToPage(msgDiv);
+    scrollToBottom(true);
 }
 
 function createMessageHtml(msg, nextMsg, lastSenderId){
@@ -92,20 +96,45 @@ function createMessageHtml(msg, nextMsg, lastSenderId){
     var isMyMsg = msg.sender._id == userLoggedIn._id;
     var liClassName = isMyMsg ? "mine" : "theirs";
 
+    var nameElement = "";
+
     if(isFirst){
         liClassName += " first";
+        if(!isMyMsg){
+            nameElement = `<span class='senderName'>${senderName}</span>`;
+        }
     }
 
+    var profileImage = "";
     if(isLast){
         liClassName += " last";
+        profileImage = `<img src='${sender.profilePic}'>`
     }
 
+    var imageContainer = "";
+    if(!isMyMsg){
+        imageContainer = `<div class='imageContainer'>
+                            ${profileImage}
+                          </div>`;
+    }
 
     return `<li class='message ${liClassName}'>
+                ${imageContainer}
                 <div class='messageContainer'>
+                    ${nameElement}
                     <span class='messageBody'>
                         ${msg.content}
                     </span>
                 </div>
             </li>`;
+}
+
+function scrollToBottom(animated){
+    var container = $('.chatMessages');
+    var scrollHeight = container[0].scrollHeight;
+    if(animated){
+        container.animate({scrollTop: scrollHeight}, "slow");
+    }else{
+        container.scrollTop(scrollHeight);
+    }
 }
