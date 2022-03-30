@@ -51,6 +51,10 @@ html, body{
     background-color: var(--backgroundColor);
 }
 
+ul{
+    margin: 0;
+}
+
 
 h1{
     font-size: 19px;
@@ -678,14 +682,23 @@ nav a:hover{
     display: flex;
     align-items: flex-end;
     flex-shrink: 0;
-    -webkit-flex: 0;
 }
 
+.typingDots img, 
 .chatMessages .message .messageBody{
     background-color: #F1F0F0;
     padding: 6px 12px;
     border-radius: 18px;
     font-size: 14px;
+}
+.typingDots img{
+    height: 35px;
+}
+
+.typingDots{
+    padding: var(--spacing);
+    padding-bottom: 0;
+    display: none;
 }
 
 .chatMessages .message .messageContainer{

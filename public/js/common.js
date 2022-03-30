@@ -625,3 +625,11 @@ function getOtherChatUsers(users){
     if(users.length == 1) return users;  // chat w/ yourself
     return users.filter(user=>user._id != userLoggedIn._id);
 }
+
+function msgReceived(newMsg){
+    if($(".chatContainer").length == 0){
+        // show some notification
+    }else{
+        addChatMessageHtml(newMsg);
+    }
+}

@@ -1,4 +1,13 @@
+var typing = false;
+var lastTypingTime;
+
 $(document).ready(()=>{
+
+
+    socket.emit("join room", chatId);
+    socket.on("typing", ()=>$(".typingDots").show());
+    socket.on("stop typing", ()=>$(".typingDots").hide());
+
     $.get(`/api/chats/${chatId}`, data=> $("#chatName").text(getChatName(data)));
     $.get(`/api/chats/${chatId}/messages`, data=>{
         var lastSenderId = "";
@@ -44,6 +53,9 @@ $(".sendMessageButton").click(()=>{
 })
 
 $(".inputTextbox").keydown((e)=>{
+
+    updateTyping();
+
     if(e.which === 13){         // 13 is the enter key
         messageSubmitted();
         return false;
@@ -51,11 +63,36 @@ $(".inputTextbox").keydown((e)=>{
     
 })
 
+function updateTyping(){
+
+    if(!connected) return;
+
+    if(!typing){
+        typing = true;
+        socket.emit("typing", chatId);
+    }
+
+    lastTypingTime = new Date().getTime();
+    var timerLength = 3000;
+
+    setTimeout(()=>{
+        var timeDiff = new Date().getTime() - lastTypingTime;
+        if(timeDiff >= timerLength && typing){
+            socket.emit("stop typing", chatId);
+            typing = false;
+        }
+    }, timerLength);
+
+    socket.emit("typing", chatId);
+}
+
 function messageSubmitted(){
     var content = $(".inputTextbox").val().trim();
     if(content != ""){
         sendMessage(content);
         $(".inputTextbox").val("");
+        socket.emit("stop typing", chatId);
+        typing = false;
     }
     
 }
@@ -70,6 +107,10 @@ function sendMessage(content){
         }
 
         addChatMessageHtml(data);
+
+        if(connected){
+            socket.emit("new message", data);
+        }
     })
 }
 

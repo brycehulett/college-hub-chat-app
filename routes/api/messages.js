@@ -25,6 +25,7 @@ router.post("/", async(req, res, next)=>{
    .then(async msg =>{
        msg = await msg.populate("sender");
        msg = await msg.populate("chat");
+       msg = await User.populate(msg, {path: "chat.users"});
        
        Chat.findByIdAndUpdate(req.body.chatId, {latestMessage: msg})
        .catch(e=>console.log(e));
